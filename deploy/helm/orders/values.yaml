@@ -2,7 +2,7 @@ replicaCount: 1
 
 image:
   repository: akashspk13/retail-store-orders
-  tag: latest
+  tag: gitops-b84736a
   pullPolicy: Always
 
 service:
