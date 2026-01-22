@@ -112,7 +112,9 @@ jobs:
 
       - name: Output image info
         run: |
-          echo "IMAGE_TAGS=${{ steps.meta.outputs.tags }}" >> $GITHUB_ENV
+          # Convert multi-line tags to single line with comma separation
+          TAGS=$(echo "${{ steps.meta.outputs.tags }}" | tr '\n' ',' | sed 's/,$//')
+          echo "IMAGE_TAGS=${TAGS}" >> $GITHUB_ENV
           echo "REPO=${{ secrets.DOCKERHUB_USERNAME }}/retail-store-${{ matrix.service }}" >> $GITHUB_ENV
 
   update-helm:
