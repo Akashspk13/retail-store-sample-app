@@ -5,11 +5,12 @@ metadata:
   namespace: argocd
   annotations:
     argocd.argoproj.io/sync-wave: "1"
+    argocd.argoproj.io/refresh-timeout: "30s"  # Timeout for refresh operation
 spec:
   project: retail-store
   source:
-    repoURL: https://github.com/LondheShubham153/retail-store-sample-app
-    targetRevision: main
+    repoURL: https://github.com/Akashspk13/retail-store-sample-app
+    targetRevision: gitops
     path: src/orders/chart
     helm:
       valueFiles:

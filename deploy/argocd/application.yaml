@@ -10,7 +10,7 @@ spec:
   
   source:
     repoURL: https://github.com/Akashspk13/retail-store-sample-app.git
-    targetRevision: main
+    targetRevision: gitops
     path: deploy/helm/retail-store
     helm:
       valueFiles:
