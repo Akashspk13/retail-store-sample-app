@@ -5,6 +5,7 @@ metadata:
   namespace: argocd
   annotations:
     argocd.argoproj.io/sync-wave: "1"
+    argocd.argoproj.io/refresh-timeout: "30s"  # Timeout for refresh operation
 spec:
   project: retail-store
   source: 
