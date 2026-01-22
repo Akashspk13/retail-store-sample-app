@@ -2,7 +2,7 @@ replicaCount: 1
 
 image:
   repository: akashspk13/retail-store-ui
-  tag: latest
+  tag: main-97783f5
   pullPolicy: Always
 
 service:

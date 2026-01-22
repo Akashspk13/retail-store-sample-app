@@ -55,16 +55,22 @@ jobs:
         cache-to: type=gha,mode=max
     
     - name: Update Helm values
-      if: github.ref == .refs/heads/gitops.
+      if: github.ref == 'refs/heads/gitops'
       run: |
         IMAGE_TAG=$(echo "${{ steps.meta.outputs.tags }}" | grep -oP 'main-\K[a-f0-9]+' | head -1)
         sed -i "s|tag:.*|tag: main-${IMAGE_TAG}|" deploy/helm/${{ env.SERVICE_NAME }}/values.yaml
         
     - name: Commit and push changes
-      if: github.ref == .refs/heads/gitops.
+      if: github.ref == 'refs/heads/gitops'
       run: |
+        # Pull latest changes first to avoid conflicts
+        git pull origin gitops --rebase --autostash
+
         git config --global user.name 'GitHub Actions'
         git config --global user.email 'actions@github.com'
+        # Pull latest changes to avoid conflicts
+        git pull origin gitops --rebase --autostash
+
         git add deploy/helm/${{ env.SERVICE_NAME }}/values.yaml
         git commit -m "Update ${{ env.SERVICE_NAME }} image tag [skip ci]" || echo "No changes"
         git push origin gitops

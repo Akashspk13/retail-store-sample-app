@@ -2,7 +2,7 @@ replicaCount: 1
 
 image:
   repository: akashspk13/retail-store-checkout
-  tag: latest
+  tag: main-27bab82
   pullPolicy: Always
 
 service:
