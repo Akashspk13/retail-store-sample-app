@@ -5,6 +5,7 @@ metadata:
   labels:
     app: cart
 spec:
+  revisionHistoryLimit: 0
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:

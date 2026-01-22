@@ -5,6 +5,7 @@ metadata:
   labels:
     app: catalog
 spec:
+  revisionHistoryLimit: 0
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
