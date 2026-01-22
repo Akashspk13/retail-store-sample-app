@@ -1,0 +1,69 @@
+name: Cart Service CI/CD
+
+on:
+  push:
+    branches: [ gitops ]
+    paths:
+      - 'src/cart/**'
+      - '.github/workflows/cart-service.yaml'
+  pull_request:
+    branches: [ gitops ]
+    paths:
+      - 'src/cart/**'
+
+env:
+  SERVICE_NAME: cart
+  DOCKERHUB_REPO: retail-store-cart
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+      
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+      
+    - name: Login to DockerHub
+      uses: docker/login-action@v3
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
+    
+    - name: Extract metadata
+      id: meta
+      uses: docker/metadata-action@v5
+      with:
+        images: ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKERHUB_REPO }}
+        tags: |
+          type=sha,prefix=main-
+          type=raw,value=latest
+    
+    - name: Build and push
+      uses: docker/build-push-action@v5
+      with:
+        context: ./src/${{ env.SERVICE_NAME }}
+        push: true
+        tags: ${{ steps.meta.outputs.tags }}
+        labels: ${{ steps.meta.outputs.labels }}
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
+    
+    - name: Update Helm values
+      if: github.ref == 'refs/heads/main'
+      run: |
+        IMAGE_TAG=$(echo "${{ steps.meta.outputs.tags }}" | grep -oP 'main-\K[a-f0-9]+' | head -1)
+        sed -i "s|tag:.*|tag: main-${IMAGE_TAG}|" deploy/helm/${{ env.SERVICE_NAME }}/values.yaml
+        
+    - name: Commit and push changes
+      if: github.ref == 'refs/heads/main'
+      run: |
+        git config --global user.name 'GitHub Actions'
+        git config --global user.email 'actions@github.com'
+        git add deploy/helm/${{ env.SERVICE_NAME }}/values.yaml
+        git commit -m "Update ${{ env.SERVICE_NAME }} image tag [skip ci]" || echo "No changes"
+        git push
