@@ -1,0 +1,28 @@
+# Global configuration
+global:
+  namespace: retail-store
+
+# UI Service
+ui:
+  enabled: true
+  replicaCount: 1
+
+# Catalog Service
+catalog:
+  enabled: true
+  replicaCount: 1
+
+# Cart Service
+cart:
+  enabled: true
+  replicaCount: 1
+
+# Orders Service
+orders:
+  enabled: true
+  replicaCount: 1
+
+# Checkout Service
+checkout:
+  enabled: true
+  replicaCount: 1
