@@ -2,7 +2,7 @@ replicaCount: 1
 
 image:
   repository: akashspk13/retail-store-ui
-  tag: gitops-6ffeb3e
+  tag: gitops-0d8d660
   pullPolicy: Always
 
 service:
